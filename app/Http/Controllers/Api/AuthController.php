@@ -19,6 +19,7 @@ class AuthController extends Controller
         $users = User::all();
         return AuthResource::collection($users);
     }
+
     //! register
     public function register(RegisterRequest $request)
     {
@@ -42,22 +43,6 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
 
-        // $userOnly = $request->only('email', 'password');
-        // if (auth()->attempt($userOnly)) {
-        //     $user = auth()->user();
-        //     $token = $user->createToken('Token Name')->accessToken;
-
-        //     $data = [
-        //         'user' => $user,
-        //         'token' => $token,
-        //     ];
-        //     return responseSuccess(
-        //         $data, "Successfully logging in", 200
-        //     );
-        // } else {
-        //     return responseError("Invalid Credentials", 400);
-        // }
-
         DB::beginTransaction();
 
         if (!User::where('email', $request->email)->exists()) {
@@ -67,11 +52,11 @@ class AuthController extends Controller
             $userOnly = $request->only('email', 'password');
             if (auth()->attempt($userOnly)) {
                 $user = auth()->user();
-                $token = $user->createToken('Token Name')->accessToken;
+                // $token = $user->createToken('Token Name')->accessToken;
 
                 $data = [
                     'user' => $user,
-                    'token' => $token,
+                    // 'token' => $token,
                 ];
                 DB::commit();
                 return responseSuccess(
@@ -104,7 +89,8 @@ class AuthController extends Controller
 
     public function logout()
     {
-        $user = auth()->user()->token()->revoke();
+        // $user = auth()->user()->token()->revoke();
+        $user = auth()->user()->delete();
         return responseSuccessMsg("Successfully logged out", 200);
     }
 }
